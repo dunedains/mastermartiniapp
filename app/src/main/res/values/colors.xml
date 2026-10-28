@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="mm_red">#FF9E2A2B</color>
-    <color name="mm_cream">#FFF5EFE6</color>
+    <color name="mm_rosso">#FFD40000</color>
+    <color name="mm_nero">#FF111113</color>
+    <color name="mm_oro">#FFC9A55C</color>
+    <color name="mm_grouped_bg">#FFF2F2F7</color>
     <color name="white">#FFFFFFFF</color>
 </resources>

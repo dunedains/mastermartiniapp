@@ -54,6 +54,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.error
@@ -129,7 +130,8 @@ fun MMTextField(
             colors = OutlinedTextFieldDefaults.colors(
                 unfocusedContainerColor = MaterialTheme.colorScheme.surface,
                 focusedContainerColor = MaterialTheme.colorScheme.surface,
-                unfocusedBorderColor = if (field.showSuccess) extra.success else MaterialTheme.colorScheme.outline,
+                // Campos blancos sobre fondo gris, sin borde hasta que se enfocan (estilo iOS).
+                unfocusedBorderColor = if (field.showSuccess) extra.success else Color.Transparent,
                 focusedBorderColor = if (field.showSuccess) extra.success else MaterialTheme.colorScheme.primary,
             ),
         )
@@ -214,14 +216,14 @@ fun <T> ChipGroup(
                         selectedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer,
                     ) else FilterChipDefaults.filterChipColors(
                         containerColor = MaterialTheme.colorScheme.surface,
-                        selectedContainerColor = MaterialTheme.colorScheme.primary,
-                        selectedLabelColor = MaterialTheme.colorScheme.onPrimary,
+                        selectedContainerColor = LocalExtraColors.current.hero,
+                        selectedLabelColor = Color.White,
                     ),
                     border = FilterChipDefaults.filterChipBorder(
                         enabled = true,
                         selected = selected,
                         borderColor = if (error != null) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.outline,
-                        selectedBorderColor = MaterialTheme.colorScheme.primary,
+                        selectedBorderColor = if (multi) MaterialTheme.colorScheme.primary else LocalExtraColors.current.hero,
                         selectedBorderWidth = 1.5.dp,
                     ),
                     modifier = Modifier.semantics {
@@ -283,7 +285,7 @@ fun PrimaryButton(
         modifier = modifier
             .fillMaxWidth()
             .height(54.dp),
-        shape = MaterialTheme.shapes.medium,
+        shape = CircleShape,
     ) {
         AnimatedContent(targetState = loading, label = "buttonLoading") { isLoading ->
             if (isLoading) {

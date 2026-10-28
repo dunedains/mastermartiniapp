@@ -9,8 +9,8 @@ import androidx.compose.animation.scaleIn
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -39,7 +39,6 @@ import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -57,6 +56,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import cl.duoc.mastermartini.data.model.Product
 import cl.duoc.mastermartini.data.model.QuoteLine
 import cl.duoc.mastermartini.ui.AppViewModelProvider
+import cl.duoc.mastermartini.ui.components.CapsuleButton
 import cl.duoc.mastermartini.ui.components.ChipGroup
 import cl.duoc.mastermartini.ui.components.EmptyState
 import cl.duoc.mastermartini.ui.components.FieldMessage
@@ -103,7 +103,7 @@ fun CatalogScreen(
                 onClick = onSendQuote,
                 color = LocalExtraColors.current.hero,
                 contentColor = MaterialTheme.colorScheme.onSecondary,
-                shape = MaterialTheme.shapes.medium,
+                shape = MaterialTheme.shapes.extraLarge,
                 modifier = Modifier.padding(20.dp).fillMaxWidth(),
             ) {
                 Row(Modifier.padding(horizontal = 20.dp, vertical = 18.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -142,7 +142,7 @@ private fun ProductRow(product: Product, line: QuoteLine?, modifier: Modifier, o
             Box(
                 Modifier
                     .size(84.dp)
-                    .background(MaterialTheme.colorScheme.surfaceVariant, MaterialTheme.shapes.small),
+                    .background(MaterialTheme.colorScheme.surfaceVariant, MaterialTheme.shapes.medium),
                 contentAlignment = Alignment.Center,
             ) { Icon(Icons.Outlined.Inventory2, null, tint = MaterialTheme.colorScheme.onSurfaceVariant) }
             Spacer(Modifier.width(14.dp))
@@ -161,23 +161,15 @@ private fun ProductRow(product: Product, line: QuoteLine?, modifier: Modifier, o
                     label = "addButton",
                 ) { current ->
                     if (current == null) {
-                        OutlinedButton(
-                            onClick = onAdd,
-                            border = BorderStroke(1.5.dp, MaterialTheme.colorScheme.primary),
-                            shape = MaterialTheme.shapes.small,
-                        ) {
-                            Icon(Icons.Filled.Add, null, Modifier.size(18.dp))
-                            Spacer(Modifier.width(4.dp))
-                            Text("Agregar a cotización")
-                        }
+                        CapsuleButton("Agregar", onClick = onAdd)
                     } else {
                         Surface(
                             onClick = onAdd,
                             color = extra.successContainer,
                             contentColor = extra.success,
-                            shape = MaterialTheme.shapes.small,
+                            shape = CircleShape,
                         ) {
-                            Row(Modifier.padding(horizontal = 14.dp, vertical = 10.dp), verticalAlignment = Alignment.CenterVertically) {
+                            Row(Modifier.padding(horizontal = 14.dp, vertical = 7.dp), verticalAlignment = Alignment.CenterVertically) {
                                 Icon(Icons.Filled.Check, null, Modifier.size(18.dp))
                                 Spacer(Modifier.width(6.dp))
                                 Text("Agregado (${current.quantity} × ${current.format})", style = MaterialTheme.typography.labelLarge)

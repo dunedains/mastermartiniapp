@@ -43,6 +43,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -85,6 +88,7 @@ fun HomeScreen(
         }
         item {
             Column(Modifier.padding(horizontal = 20.dp)) {
+                Text("BENVENUTO", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.primary)
                 Text("Hola, ${s.user?.firstName.orEmpty()}", style = MaterialTheme.typography.headlineMedium)
                 Text(
                     "Esto preparamos para tu ${s.user?.businessType?.label?.lowercase() ?: "negocio"}",
@@ -159,15 +163,27 @@ private fun FeaturedVideoCard(item: LearnItem, onClick: () -> Unit) {
         animationSpec = infiniteRepeatable(tween(900), RepeatMode.Reverse), label = "playScale",
     )
     val extra = LocalExtraColors.current
+    // Tarjeta tipo "Hoy" de la App Store: negro profundo con un resplandor rojo Ferrari.
+    val glow = Brush.radialGradient(
+        colors = listOf(MaterialTheme.colorScheme.primary.copy(alpha = 0.55f), Color.Transparent),
+        center = Offset(900f, 0f),
+        radius = 900f,
+    )
     Card(
         onClick = onClick,
-        modifier = Modifier.padding(horizontal = 20.dp).fillMaxWidth(),
-        shape = MaterialTheme.shapes.large,
+        modifier = Modifier
+            .padding(horizontal = 20.dp)
+            .fillMaxWidth()
+            .shadow(24.dp, MaterialTheme.shapes.extraLarge, spotColor = Color.Black.copy(alpha = 0.25f)),
+        shape = MaterialTheme.shapes.extraLarge,
         colors = CardDefaults.cardColors(containerColor = extra.hero, contentColor = Color.White),
     ) {
-        Column(Modifier.padding(20.dp)) {
-            if (item.isNew) Pill("Video nuevo", extra.badge, extra.hero)
-            Box(Modifier.fillMaxWidth().height(90.dp), contentAlignment = Alignment.Center) {
+        Column(Modifier.background(glow).padding(22.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text("DESTACADO", style = MaterialTheme.typography.labelSmall, color = extra.badge, modifier = Modifier.weight(1f))
+                if (item.isNew) Pill("Nuevo", extra.badge, extra.hero)
+            }
+            Box(Modifier.fillMaxWidth().height(120.dp), contentAlignment = Alignment.Center) {
                 Box(
                     Modifier
                         .size(58.dp)
@@ -179,7 +195,7 @@ private fun FeaturedVideoCard(item: LearnItem, onClick: () -> Unit) {
                     Icon(Icons.Filled.PlayArrow, "Reproducir video", tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(30.dp))
                 }
             }
-            Text(item.title, style = MaterialTheme.typography.titleMedium)
+            Text(item.title, style = MaterialTheme.typography.headlineSmall)
             Text("${item.author} · ${item.duration}", style = MaterialTheme.typography.bodyMedium, color = Color.White.copy(alpha = 0.8f))
         }
     }
@@ -191,7 +207,7 @@ private fun RecipeCard(item: LearnItem, onClick: () -> Unit) {
         Box(
             Modifier
                 .fillMaxWidth()
-                .height(96.dp)
+                .height(110.dp)
                 .background(Color(item.thumbColor))
         )
         Column(Modifier.padding(12.dp)) {

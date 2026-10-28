@@ -57,6 +57,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import cl.duoc.mastermartini.ui.theme.LocalExtraColors
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
@@ -136,11 +137,13 @@ fun SearchField(value: String, onChange: (String) -> Unit, placeholder: String, 
             if (value.isNotEmpty()) IconButton(onClick = { onChange("") }) { Icon(Icons.Filled.Close, "Limpiar búsqueda") }
         },
         singleLine = true,
-        shape = MaterialTheme.shapes.medium,
+        shape = MaterialTheme.shapes.small,
+        // Barra de búsqueda gris sin borde, como la de iOS.
         colors = OutlinedTextFieldDefaults.colors(
-            unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+            unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
             focusedContainerColor = MaterialTheme.colorScheme.surface,
-            unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+            unfocusedBorderColor = Color.Transparent,
+            unfocusedLeadingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
         ),
     )
 }
@@ -162,8 +165,14 @@ private fun CategoryChip(text: String, selected: Boolean, onClick: () -> Unit) {
         shape = CircleShape,
         colors = FilterChipDefaults.filterChipColors(
             containerColor = MaterialTheme.colorScheme.surface,
-            selectedContainerColor = MaterialTheme.colorScheme.primary,
-            selectedLabelColor = MaterialTheme.colorScheme.onPrimary,
+            selectedContainerColor = LocalExtraColors.current.hero,
+            selectedLabelColor = Color.White,
+        ),
+        border = FilterChipDefaults.filterChipBorder(
+            enabled = true,
+            selected = selected,
+            borderColor = Color.Transparent,
+            selectedBorderColor = Color.Transparent,
         ),
     )
 }

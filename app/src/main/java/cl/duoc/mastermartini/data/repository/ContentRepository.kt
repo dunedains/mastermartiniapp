@@ -89,7 +89,7 @@ class FakeContentRepository : ContentRepository {
             category = "Panadería", duration = "6 módulos", difficulty = Difficulty.MEDIUM,
             description = "Curso online gratuito con certificado.",
             steps = listOf("Módulo 1: materias grasas", "Módulo 2: empaste", "Módulo 3: vueltas"),
-            productIds = listOf("p-margarina"), thumbColor = 0xFF9E2A2B,
+            productIds = listOf("p-margarina"), thumbColor = 0xFFD40000,
         ),
         LearnItem(
             id = "c-vitrina", kind = LearnKind.COURSE, title = "Curso: pastelería de vitrina",

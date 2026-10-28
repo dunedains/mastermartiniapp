@@ -11,6 +11,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -25,6 +26,7 @@ import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.PlayCircle
 import androidx.compose.material.icons.outlined.ShoppingBag
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -39,7 +41,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavHostController
@@ -134,7 +138,10 @@ fun AppNavigation(isLogged: Boolean, navController: NavHostController = remember
                 enter = slideInVertically { it } + fadeIn(),
                 exit = slideOutVertically { it } + fadeOut(),
             ) {
-                NavigationBar(containerColor = MaterialTheme.colorScheme.surface) {
+                // Barra estilo iOS: blanca, línea fina arriba y sin "píldora" de selección.
+                Column {
+                HorizontalDivider(thickness = 0.5.dp, color = MaterialTheme.colorScheme.outline)
+                NavigationBar(containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.97f), tonalElevation = 0.dp) {
                     TABS.forEach { tab ->
                         val selected = currentDestination?.hierarchy?.any { it.route == tab.route } == true
                         val scale by animateFloatAsState(if (selected) 1.15f else 1f, label = "tabIcon")
@@ -148,14 +155,17 @@ fun AppNavigation(isLogged: Boolean, navController: NavHostController = remember
                                     modifier = Modifier.scale(scale),
                                 )
                             },
-                            label = { Text(tab.label) },
+                            label = { Text(tab.label, style = MaterialTheme.typography.labelMedium) },
                             colors = NavigationBarItemDefaults.colors(
                                 selectedIconColor = MaterialTheme.colorScheme.primary,
                                 selectedTextColor = MaterialTheme.colorScheme.primary,
-                                indicatorColor = MaterialTheme.colorScheme.primaryContainer,
+                                unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                                unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                                indicatorColor = Color.Transparent,
                             ),
                         )
                     }
+                }
                 }
             }
         },

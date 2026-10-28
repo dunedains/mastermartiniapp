@@ -2,7 +2,6 @@ package cl.duoc.mastermartini.ui.components
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
@@ -11,7 +10,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -34,30 +35,50 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import cl.duoc.mastermartini.ui.theme.LocalExtraColors
 
-/** Logo provisorio + nombre de marca (como en el mockup). */
+/** Monograma negro con letras doradas + nombre de marca espaciado, con la franja tricolor. */
 @Composable
 fun BrandHeader(modifier: Modifier = Modifier, trailing: @Composable () -> Unit = {}) {
     Row(modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
         Box(
             Modifier
-                .size(42.dp)
-                .clip(RoundedCornerShape(10.dp))
-                .background(MaterialTheme.colorScheme.primary),
+                .size(40.dp)
+                .clip(RoundedCornerShape(11.dp))
+                .background(LocalExtraColors.current.hero),
             contentAlignment = Alignment.Center,
         ) {
-            Text("MM", color = MaterialTheme.colorScheme.onPrimary, style = MaterialTheme.typography.labelLarge)
+            Text("MM", color = LocalExtraColors.current.badge, style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Black)
         }
-        Spacer(Modifier.width(10.dp))
-        Text("Master Martini", style = MaterialTheme.typography.titleLarge, modifier = Modifier.weight(1f))
+        Spacer(Modifier.width(12.dp))
+        Column(Modifier.weight(1f)) {
+            Text(
+                "MASTER MARTINI",
+                style = MaterialTheme.typography.labelLarge,
+                fontWeight = FontWeight.Black,
+                letterSpacing = 2.sp,
+            )
+            TricolorStripe(Modifier.padding(top = 4.dp))
+        }
         trailing()
+    }
+}
+
+/** Franja verde-blanco-rojo, guiño a la bandera italiana. */
+@Composable
+fun TricolorStripe(modifier: Modifier = Modifier) {
+    Row(modifier.height(3.dp).width(54.dp).clip(RoundedCornerShape(2.dp))) {
+        Box(Modifier.weight(1f).fillMaxHeight().background(LocalExtraColors.current.success))
+        Box(Modifier.weight(1f).fillMaxHeight().background(MaterialTheme.colorScheme.outline))
+        Box(Modifier.weight(1f).fillMaxHeight().background(MaterialTheme.colorScheme.primary))
     }
 }
 
@@ -82,20 +103,39 @@ fun SectionHeader(title: String, action: String? = null, onAction: () -> Unit = 
         Text(title, style = MaterialTheme.typography.titleMedium, modifier = Modifier.weight(1f).semantics { heading() })
         if (action != null) {
             TextButton(onClick = onAction) {
-                Text(action, textDecoration = TextDecoration.Underline, color = MaterialTheme.colorScheme.primary)
+                Text(action, style = MaterialTheme.typography.bodyLarge, color = MaterialTheme.colorScheme.primary)
             }
         }
     }
 }
 
-/** Etiqueta pequeña tipo "PRESENCIAL", "ASESORÍA", "VIDEO NUEVO". */
+/** Etiqueta cápsula tipo "PRESENCIAL", "ASESORÍA", "VIDEO NUEVO". */
 @Composable
 fun Pill(text: String, container: Color, content: Color, modifier: Modifier = Modifier) {
-    Surface(color = container, contentColor = content, shape = RoundedCornerShape(8.dp), modifier = modifier) {
+    Surface(color = container, contentColor = content, shape = CircleShape, modifier = modifier) {
         Text(
             text.uppercase(),
             style = MaterialTheme.typography.labelSmall,
             modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
+        )
+    }
+}
+
+/** Botón cápsula gris con texto rojo, como el "Obtener" de la App Store. */
+@Composable
+fun CapsuleButton(text: String, onClick: () -> Unit, modifier: Modifier = Modifier) {
+    Surface(
+        onClick = onClick,
+        shape = CircleShape,
+        color = MaterialTheme.colorScheme.surfaceVariant,
+        contentColor = MaterialTheme.colorScheme.primary,
+        modifier = modifier,
+    ) {
+        Text(
+            text.uppercase(),
+            style = MaterialTheme.typography.labelMedium,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.padding(horizontal = 18.dp, vertical = 7.dp),
         )
     }
 }
@@ -115,8 +155,8 @@ fun VideoThumb(color: Long, size: Dp = 96.dp, height: Dp = 72.dp, showPlay: Bool
 }
 
 /**
- * Tarjeta blanca con borde suave. Si es clickeable, se "hunde" levemente al presionarla
- * (micro-animación de retroalimentación táctil).
+ * Tarjeta blanca sin borde con sombra difusa (estilo App Store). Si es clickeable, se "hunde"
+ * levemente al presionarla (micro-animación de retroalimentación táctil).
  */
 @Composable
 fun MMCard(
@@ -129,23 +169,27 @@ fun MMCard(
     val pressed by interaction.collectIsPressedAsState()
     val scale by animateFloatAsState(if (pressed) 0.97f else 1f, spring(), label = "cardPress")
     val colors = CardDefaults.cardColors(containerColor = container)
-    val border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
+    val shape = MaterialTheme.shapes.large
+    val softShadow = Modifier.shadow(
+        elevation = 14.dp,
+        shape = shape,
+        ambientColor = Color.Black.copy(alpha = 0.06f),
+        spotColor = Color.Black.copy(alpha = 0.10f),
+    )
     if (onClick != null) {
         Card(
             onClick = onClick,
-            modifier = modifier.fillMaxWidth().scale(scale),
-            shape = MaterialTheme.shapes.large,
+            modifier = modifier.fillMaxWidth().scale(scale).then(softShadow),
+            shape = shape,
             colors = colors,
-            border = border,
             interactionSource = interaction,
             content = content,
         )
     } else {
         Card(
-            modifier = modifier.fillMaxWidth(),
-            shape = MaterialTheme.shapes.large,
+            modifier = modifier.fillMaxWidth().then(softShadow),
+            shape = shape,
             colors = colors,
-            border = border,
             content = content,
         )
     }
@@ -175,4 +219,4 @@ fun EmptyState(text: String, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun MMDivider() = HorizontalDivider(color = MaterialTheme.colorScheme.outline)
+fun MMDivider() = HorizontalDivider(thickness = 0.5.dp, color = MaterialTheme.colorScheme.outline)
