@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Tema base de la Activity; los colores reales los define Compose (ui/theme). -->
+    <style name="Theme.MasterMartini" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:windowBackground">@color/mm_cream</item>
+        <item name="android:statusBarColor">@color/mm_cream</item>
+        <item name="android:windowLightStatusBar">true</item>
+    </style>
+</resources>
